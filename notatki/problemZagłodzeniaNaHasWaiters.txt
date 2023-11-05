@@ -1,0 +1,14 @@
+# Zagłodzenie na 4 conditions + hasWaiters będzie wynikało z faktu 
+# że pierwszy producent nie będzie miał dostępu przed resztą producentów, lecz będzie
+# starał się o Lock'a (hasWaiters nie będzie gwarantował pierwszeństwa)
+
+[10/20]
+...
+P1 - wchodzi (reszta czeka) i przekazuje 5 (notyfikuje reszę prod i 1 kons)
+C1 - wchodzi (reszta czeka) i czeka
+C1 - odbiera sygnał - pobiera 1 i notyfikuje 1 producenta 
+P2 - nikt nie czeka na hasWaiters(pierwszy producent) => stara się o locka z wszystkimi innymi producentami.
+...
+
+Producent z dużą ilością zasobów może zostać zagłodzony przez brak dostępu do bufora ponieważ 
+hasWaiters nadal nie będzie gwarantował pierwszeństwa w dostępie do bufora.
