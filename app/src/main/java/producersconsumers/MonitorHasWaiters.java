@@ -21,17 +21,20 @@ class MonitorHasWaiters {
     private HashMap<String, Integer> producersMap = new HashMap<String, Integer>();
     private HashMap<String, Integer> consumersMap = new HashMap<String, Integer>();
 
-    private void printMessage(String label, String threadId){
+    private HashMap<String, Integer> producersStarvation = new HashMap<String, Integer>();
+    private HashMap<String, Integer> consumersStarvation = new HashMap<String, Integer>();  
+
+    private synchronized void printMessage(String label, String threadId){
 
         System.out.print("P[ ");
 
-        for(Entry<String, Integer> a : producersMap.entrySet()){
+        for(Entry<String, Integer> a : producersStarvation.entrySet()){
             System.out.print(a.getKey() + ":" + a.getValue() + " ");            
         }
 
         System.out.print("]  C[ ");
         
-        for(Entry<String, Integer> a : consumersMap.entrySet()){
+        for(Entry<String, Integer> a : consumersStarvation.entrySet()){
             System.out.print(a.getKey() + ":" + a.getValue() + " ");            
         }
 
@@ -41,7 +44,9 @@ class MonitorHasWaiters {
     public void ConsumeData(int quantity, String threadId) throws InterruptedException {
         try {
             lock.lock();
-            consumersMap.put(threadId, 0);
+            consumersMap.putIfAbsent(threadId, 0);
+            consumersStarvation.putIfAbsent(threadId, 0);
+
             printMessage("C[" + threadId + "]: chce pobrać [" + quantity +"]", threadId);
 
             while(this.lock.hasWaiters(this.firstCons)){
@@ -50,8 +55,15 @@ class MonitorHasWaiters {
                 printMessage("C[" + threadId + "]: czeka na buffor [reszta]", threadId);
             }
 
+            consumersMap.replace(threadId, 2);
+
             while (buffer < quantity){
-                consumersMap.replace(threadId, consumersMap.get(threadId) + 1);
+
+                consumersMap.replace(
+                    threadId,
+                    consumersMap.get(threadId) + 1
+                );
+
                 printMessage("C[" + threadId + "]: czeka na buffor [pierwszy]", threadId);
                 firstCons.await();
             }
@@ -65,24 +77,33 @@ class MonitorHasWaiters {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
+            consumersStarvation.replace(threadId, consumersStarvation.get(threadId) + 1);
             lock.unlock();
         }
     }
 
-    public synchronized void ProduceData(int quantity, String threadId) throws InterruptedException {
+    public void ProduceData(int quantity, String threadId) throws InterruptedException {
         try{
             lock.lock();
-            producersMap.put(threadId, 0);
+            producersMap.putIfAbsent(threadId, 0);
+            producersStarvation.putIfAbsent(threadId, 0);
+
             printMessage("P[" + threadId + "]: wyprodukował [" + quantity +"]", threadId);
 
             while (this.lock.hasWaiters(this.firstProd)){
                 producersMap.replace(threadId, 1);
-                printMessage("p[" + threadId + "]: czeka na buffor [reszta]", threadId);
+                printMessage("P[" + threadId + "]: czeka na buffor [reszta]", threadId);
                 restProd.await();
             }
 
+            producersMap.replace(threadId, 2);
+
             while (MAX_BUFFER - buffer < quantity){
-                producersMap.replace(threadId, producersMap.get(threadId)+1);
+                producersMap.replace(
+                    threadId, 
+                    producersMap.get(threadId) + 1
+                );
+
                 printMessage("P[" + threadId + "]: czeka na buffor [pierwszy]", threadId);
                 firstProd.await();
             }
@@ -96,6 +117,7 @@ class MonitorHasWaiters {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
+            producersStarvation.replace(threadId, producersStarvation.get(threadId) + 1);
             lock.unlock();
         }
     }

@@ -48,7 +48,7 @@ class Monitor2Conditions{
                 producerCondition.await();
             }
 
-            producersMap.replace(threadId, producersMap.get(threadId) + 1);
+
             buffer += quantity;
             printMessage("P["+threadId+ "]: przekazuje [" + quantity +"] zapełnienie [" + buffer + "/ "+MAX_BUFFER+"]", threadId);
             consumerCondition.signal();
@@ -56,6 +56,7 @@ class Monitor2Conditions{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
+            producersMap.replace(threadId, producersMap.get(threadId) + 1);
             lock.unlock();
         }
     }
@@ -72,7 +73,6 @@ class Monitor2Conditions{
                 consumerCondition.await();
             }
 
-            consumersMap.replace(threadId, consumersMap.get(threadId) + 1);
             buffer -= quantity;
             printMessage("C["+threadId+ "]: pobiera [" + quantity + "] zapełnienie [" + buffer + "/ "+MAX_BUFFER +"]", threadId);
             producerCondition.signal();
@@ -80,6 +80,7 @@ class Monitor2Conditions{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
+            consumersMap.replace(threadId, consumersMap.get(threadId) + 1);
             lock.unlock();
         }
     }

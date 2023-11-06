@@ -1,13 +1,16 @@
-3 konsumentów 3 producentów 
 # Zagłodzenie ne 2 condition będzie polegało na niedopuszczeniu do bufora producenta z dużą ilością zasobów.
 
-P1[5] - przekazuje 5 i wychodzi (notifikuje konsumentów)
-C1[1] - odbiera sygnał, wchodzi i pobiera 1 (notyfikuje producentów)
-P1[10] - przekazuje 10 i wychodzi (notfikuje konsumentów)
-C2[1] - wchodzi i pobiera 1 (notyfikuje producentów)
-P2[10] - wchodzi i czeka (Nie ma miejsca w buforze - zawiesza się)
-P1[1] - wchodzi i przekazuje
+Założenia 3 Producentów / 3 Konsumentów | Rozmiar Bufora 20 | Max ilość 
+P1[6] - przekazuje 6 i wychodzi (notifikuje konsumentów)
+P1[6] - wchodzi ponownie i przekazuje 6
+P1[6] - wchodzi ponownie i przekazuje 6 
+P1[6] - wchodzi ponownie czeka na bufor
+C1[10] - wchodzi i pobiera 10
+C1[10] - wchodzi czeka na bufor
+P2[3] - wchodzi i przekazje 3
 ...
 
-Producent z dużą ilością zasobów może zostać zagłodzony przez brak dostępu do bufora.
+Producenci i konsumenci z dużą ilością zasobów będą rzadziej dopuszczani do bufora.
+
+
 

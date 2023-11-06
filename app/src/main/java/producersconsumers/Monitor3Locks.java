@@ -14,10 +14,6 @@ class Monitor3Locks{
 
     private final Condition lockCondition = lock.newCondition();
 
-    Monitor3Locks(){
-        super();
-    };
-
     public void ConsumeData(int quantity, String threadId) throws InterruptedException {
         consumerLock.lock();
         try {
@@ -25,12 +21,12 @@ class Monitor3Locks{
             System.out.println("C["+threadId +"]: chce pobrać: [" + quantity +"]");
 
             while (buffer < quantity){
-                System.out.println("C[" + Thread.currentThread().getName()+ "]: czeka na buffor");
+                System.out.println("C[" + threadId + "]: czeka na buffor");
                 lockCondition.await();
             }
 
             buffer -= quantity;
-            System.out.println("C["+Thread.currentThread().getName()+ "]: pobiera [" + quantity + "] zapełnienie [" + buffer + "/ "+MAX_BUFFER +"]");
+            System.out.println("C["+ threadId + "]: pobiera [" + quantity + "] zapełnienie [" + buffer + "/ "+MAX_BUFFER +"]");
 
             lockCondition.signal();
             lock.unlock();
@@ -48,12 +44,12 @@ class Monitor3Locks{
             System.out.println("P["+threadId +"]: wyprodukował: [" + quantity +"]");
 
             while (MAX_BUFFER - buffer < quantity){
-                System.out.println("P[" + Thread.currentThread().getName()+ "]: czeka na buffor");
+                System.out.println("P[" + threadId+ "]: czeka na buffor");
                 lockCondition.await();
             }
 
             buffer += quantity;
-            System.out.println("P["+Thread.currentThread().getName()+ "]: przekazuje [" + quantity +"] zapełnienie [" + buffer + "/ "+MAX_BUFFER+"]");
+            System.out.println("P["+threadId+ "]: przekazuje [" + quantity +"] zapełnienie [" + buffer + "/ "+MAX_BUFFER+"]");
 
             lockCondition.signal();
             lock.unlock();

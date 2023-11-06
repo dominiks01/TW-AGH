@@ -2,13 +2,15 @@
 # że pierwszy producent nie będzie miał dostępu przed resztą producentów, lecz będzie
 # starał się o Lock'a (hasWaiters nie będzie gwarantował pierwszeństwa)
 
-[10/20]
-...
-P1 - wchodzi (reszta czeka) i przekazuje 5 (notyfikuje reszę prod i 1 kons)
-C1 - wchodzi (reszta czeka) i czeka
-C1 - odbiera sygnał - pobiera 1 i notyfikuje 1 producenta 
-P2 - nikt nie czeka na hasWaiters(pierwszy producent) => stara się o locka z wszystkimi innymi producentami.
-...
+Założenia 3 Producentów / 3 Konsumentów | Rozmiar Bufora 10 | Max ilość 5
+C1[5] - wchodzi i czeka (jako pierwszy konsument)
+C2[5] - wchodzi i czeka (z resztą konsumentów) 
+C3[3] - wchodzi i czeka (z resztą konsumentów) 
+P1[1] - wchodzi i przekazuje 3 [3/10]
+C1[5] - *wychodzi z hasWaiters i czeka na Lock'a*
+C2[2] - *nieuprawniony wątek wchodzi i pobiera zasoby [1/10]*
+
+C1 - Ponieważ wątek wyszedł z hasWaiters konsument C2 był w stanie starać się o Lock'a z C1, którego otrzymał.
 
 Producent z dużą ilością zasobów może zostać zagłodzony przez brak dostępu do bufora ponieważ 
-hasWaiters nadal nie będzie gwarantował pierwszeństwa w dostępie do bufora.
+hasWaiters nadal nie będzie gwarantował pierwszeństwa w dostępie.
