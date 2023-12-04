@@ -1,3 +1,0 @@
-Java:
-* Bufor cykliczny:
-    Buffor - manager zarządzanjący buforami i procesami
