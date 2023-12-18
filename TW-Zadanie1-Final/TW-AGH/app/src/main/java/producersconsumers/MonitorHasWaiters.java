@@ -28,13 +28,13 @@ class MonitorHasWaiters {
 
         System.out.print("P[ ");
 
-        for(Entry<String, Integer> a : producersStarvation.entrySet()){
+        for(Entry<String, Integer> a : producersMap.entrySet()){
             System.out.print(a.getKey() + ":" + a.getValue() + " ");            
         }
 
         System.out.print("]  C[ ");
         
-        for(Entry<String, Integer> a : consumersStarvation.entrySet()){
+        for(Entry<String, Integer> a : consumersMap.entrySet()){
             System.out.print(a.getKey() + ":" + a.getValue() + " ");            
         }
 

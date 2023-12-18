@@ -11,7 +11,7 @@ public class Buffer implements CSProcess {
     private int value;
     private One2OneChannel<Request> next_buffer;
     private One2OneChannel<Request> prev_buffer;
-    private final List<One2OneChannel<Request>>  clients;
+    private final List<One2OneChannel<Request>> requests;
     private final int buffer_id;
     private final Deque<Request> queue;
     private boolean token;
@@ -22,7 +22,7 @@ public class Buffer implements CSProcess {
     public Buffer(One2OneChannel<Request> prev_buffer, One2OneChannel<Request> next_buffer, List<One2OneChannel<Request>> requests , int size, int index) {
         this.next_buffer = next_buffer;
         this.prev_buffer = prev_buffer;
-        this.clients = requests;
+        this.requests = requests;
         this.value = 0;
         this.buffer_size = size;
         this.buffer_id = index;
@@ -31,18 +31,17 @@ public class Buffer implements CSProcess {
     }
 
     public void run() {
-        Guard[] guards = new Guard[clients.size()];
+        Guard[] guards = new Guard[requests.size()];
 
-        for(int i = 0 ; i < clients.size() ; i++) {
-            guards[i] = clients.get(i).in();
-        }
+        for(int i = 0; i < requests.size() ; i++)
+            guards[i] = requests.get(i).in();
 
         Alternative alt = new Alternative(guards);
 
         while (true) {
             while(queue.isEmpty()){
                 int index = alt.select();
-                Request request = clients.get(index).in().read();
+                Request request = requests.get(index).in().read();
                 request.setOwner(this.buffer_id);
 
                 System.out.println("B[" + this.buffer_id + "]: Obsługuję clienta");

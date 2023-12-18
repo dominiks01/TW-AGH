@@ -1,0 +1,19 @@
+D = {(a,b), (a,c), (b,d), (c,d), (b,a), (c,a), (d,c), (d,c)}
+I_v = {(a,a), (b,b), (c,c), (d,d)}
+ND = {(a,d), (b,c), (d,a), (c,b)}
+w = baadcb
+[w] = {baadcb, badacb, bdaacb, bdaabc, badabc, baadbc}
+
+(b)(ad)(a)(bc)
+
+      	
+Algorytm Fouty 
+| * | b |  
+| a | * | * | * |  
+| a | * | * | d |  
+| * | * | * | * |  
+| * | b | c | * |  
+-----------------
+| a | b | c | d |  
+
+b->((d -> c)|(a->b-)) 

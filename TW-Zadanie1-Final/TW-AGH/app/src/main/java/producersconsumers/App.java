@@ -7,14 +7,14 @@ public class App {
 
     public static void main(String[] args) {
         // Monitor2Conditions monitor = new Monitor2Conditions();
-        // MonitorHasWaiters monitor = new MonitorHasWaiters();
-        MonitorBoolean monitor = new MonitorBoolean();
+        MonitorHasWaiters monitor = new MonitorHasWaiters();
+        // MonitorBoolean monitor = new MonitorBoolean();
         // Monitor3Locks monitor = new Monitor3Locks();
 
-        int NUMBER_OF_PRODUCERS = 2;
-        int NUMBER_OF_BIG_PRODUCERS = 1;
-        int NUMBER_OF_CONSUMERS = 2;
-        int NUMBER_OF_BIG_CONSUMERS = 1;
+        int NUMBER_OF_PRODUCERS = 5;
+        int NUMBER_OF_BIG_PRODUCERS = 0;
+        int NUMBER_OF_CONSUMERS = 6;
+        int NUMBER_OF_BIG_CONSUMERS = 0;
 
         Thread producers[] = new Thread[NUMBER_OF_PRODUCERS + NUMBER_OF_BIG_PRODUCERS];
         Thread consumers[] = new Thread[NUMBER_OF_CONSUMERS + NUMBER_OF_BIG_CONSUMERS];

@@ -1,0 +1,19 @@
+# Zakleszczenie na 4 Conditions będzie polegać na zmniejszaniu ilości konsumentów wpuszczając nieuprawnionych 
+# konsumentów do firstConsument 
+
+C1[5] - wchodzi i czeka na firstConsument
+C2[5] - wchodzi i czeka na restConsument
+C3[3] - wchodzi i czeka na restConsument 
+P1[1] - wchodzi i przekazuje 1 [1/10]
+C1[5] - * wychodzi z hasWaiters i czeka na Lock'a *
+C2[2] - * nieuprawniony wątek wchodzi i wiesza się na (Mamy 2 wątki czekające na firstConsument) *
+P5[5] - wchodzi i przekazuje 5 [6/10]
+C2[2] - nieuprawniony wątek pobiera zasoby 2 [4/10]
+C5[5] - wiesza się na firstConsument 
+P5[5] - przekazuje 5 [9/10]
+
+Potrzebne do zakleszczenia:
+* Przepełnienie bufora
+* Złośliwe niewpuszczenie odpowiedniego konsumenta 
+* Przepadania wątków na firstConsument 
+
